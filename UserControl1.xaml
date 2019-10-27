@@ -34,7 +34,7 @@
 
                 <TextBlock Grid.Column="0" Grid.Row ="0" VerticalAlignment="Center" Text="Commands" FontWeight="Bold" Margin="5" />
 
-                <TextBlock Grid.Column="0" Grid.Row ="1" Text="!listplayers [-online] [-players] [-faction=&lt;FactionTag>] [-orderby=&lt;name|date|faction>]" Margin="5" />
+                <TextBlock Grid.Column="0" Grid.Row ="1" Text="!listplayers [-online] [-players] [-npcs] [-faction=&lt;FactionTag>]&#x0a;[-orderby=&lt;name|date|faction|blocks|pcu>]&#x0a;[-filter=&lt;name|date|faction|blocks|pcu>&lt;&lt;, &lt;=, &gt;, &gt;=, !=, =&gt;&lt;Attribute&gt;]" Margin="5" />
                 <TextBlock Grid.Column="1" Grid.Row ="1" TextWrapping="Wrap" Text="Shows all Players on the server. With their faction, IDs and logout times." Margin="5" />
 
             </Grid>
