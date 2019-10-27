@@ -1,4 +1,7 @@
-﻿using NLog;
+﻿using ALE_Core.Attribute;
+using ALE_Core.Attribute.Filter;
+using ALE_Core.Attribute.Sorting;
+using NLog;
 using Sandbox.Game.World;
 using System;
 using System.Collections.Generic;
@@ -25,40 +28,101 @@ namespace ALE_PlayerStats {
 
             List<string> args = Context.Args;
 
-            string factionTag = null;
-            bool online = false;
-            bool playerOnly = false;
-            string orderby = "name";
+            List<AttributeSortRule> sortRules = new List<AttributeSortRule>();
+            List<AbstractAttributeFilterRule> filterRules = new List<AbstractAttributeFilterRule>();
 
             for (int i = 0; i < args.Count; i++) {
 
                 if (args[i] == "-online")
-                    online = true;
+                    filterRules.Add(new StandardAttributeFilterRule("online", AttributeRelation.EQUALS, true));
 
                 if (args[i] == "-players")
-                    playerOnly = true;
+                    filterRules.Add(new StandardAttributeFilterRule("real", AttributeRelation.EQUALS, true));
+
+                if (args[i] == "-npcs")
+                    filterRules.Add(new StandardAttributeFilterRule("real", AttributeRelation.EQUALS, false));
 
                 if (args[i].StartsWith("-faction="))
-                    factionTag = args[i].Replace("-faction=", "");
+                    filterRules.Add(new StandardAttributeFilterRule("faction", AttributeRelation.EQUALS, args[i].Replace("-faction=", "")));
+
+                if (args[i].StartsWith("-filter=")) {
+
+                    string filter = args[i].Replace("-filter=", "").Trim();
+
+                    var definiton = AttributeFilterFactory.GetFilterDefinition(filter);
+
+                    if(definiton == null) {
+                        Context.Respond("Could not parse '"+filter+"'. Ignoring!");
+                        continue;
+                    }
+
+                    string attribute = definiton.Attribute;
+
+                    if (attribute != "name"
+                        && attribute != "date"
+                        && attribute != "faction"
+                        && attribute != "blocks"
+                        && attribute != "pcu") {
+
+                        Context.Respond("You can only filter 'name', 'date', 'faction', 'pcu' or blocks! Combinations are possible. Ignoring!");
+                        continue;
+                    }
+
+                    if(attribute == "name" || attribute == "faction")
+                        filterRules.Add(new StandardAttributeFilterRule(attribute, definiton.Relation, definiton.Value));
+
+                    if (attribute == "blocks" || attribute == "pcu") {
+
+                        if (int.TryParse(definiton.Value, out int intValue)) {
+
+                            filterRules.Add(new StandardAttributeFilterRule(attribute, definiton.Relation, intValue));
+
+                        } else {
+
+                            Context.Respond("Could not parse '" + definiton.Value + "'. Ignoring!");
+                            continue;
+                        }
+                    }
+
+                    if (attribute == "date") {
+
+                        if (int.TryParse(definiton.Value, out int intValue)) {
+
+                            DateTime now = DateTime.Now;
+                            now = now.AddDays(-intValue);
+                                
+                            filterRules.Add(new StandardAttributeFilterRule(attribute, definiton.Relation, now));
+
+                        } else {
+
+                            Context.Respond("Could not parse '" + definiton.Value + "' only an integer amount of days is allowed. Ignoring!");
+                            continue;
+                        }
+                    }
+                }
 
                 if (args[i].StartsWith("-orderby=")) {
 
-                    orderby = args[i].Replace("-orderby=", "");
+                    string orderby = args[i].Replace("-orderby=", "");
 
                     if (orderby != "name"
                         && orderby != "date"
-                        && orderby != "faction") {
+                        && orderby != "faction"
+                        && orderby != "blocks"
+                        && orderby != "pcu") {
 
-                        Context.Respond("You can only order by 'name' 'date' or 'faction'!");
+                        Context.Respond("You can only order by 'name', 'date', 'faction', 'pcu' or blocks! Combinations are possible");
                         return;
                     }
+
+                    sortRules.Add(new AttributeSortRule(orderby));
                 }
             }
 
-            ListPlayers(factionTag, online, playerOnly, orderby);
+            ListPlayers(sortRules, filterRules);
         }
 
-        private void ListPlayers(string factionTag, bool online, bool playerOnly, string orderby) {
+        private void ListPlayers(List<AttributeSortRule> sortRules, List<AbstractAttributeFilterRule> filterRules) {
 
             var playerList = MySession.Static.Players;
             var factionList = MySession.Static.Factions;
@@ -71,23 +135,11 @@ namespace ALE_PlayerStats {
 
                 long id = identity.IdentityId;
 
-                /* filter NPCs if demanded */
-                if (playerOnly && playerList.IdentityIsNpc(id))
-                    continue;
-
-                /* Filter offline if demanded */
-                if (online && !playerList.IsPlayerOnline(id))
-                    continue;
-
+                bool isReal = !playerList.IdentityIsNpc(id);
+                bool isOnline = playerList.IsPlayerOnline(id);
+                
                 var faction = factionList.GetPlayerFaction(id);
-
-                /* Filter faction if player has one */
-                if (factionTag != null && factionTag != "" && (faction == null || faction.Tag != factionTag))
-                    continue;
-
-                /* Filter factionless people if demanded */
-                if (factionTag == "" && faction != null)
-                    continue;
+                string tag = faction != null ? faction.Tag : "";
 
                 /* can be 0 for NPCs */
                 ulong steamId = playerList.TryGetSteamId(id);
@@ -98,76 +150,13 @@ namespace ALE_PlayerStats {
                 if (lastLoginTime > lastLogoutTime)
                     date = lastLoginTime;
 
-                var tag = faction == null ? null : faction.Tag;
-
-                entries.Add(new PlayerEntry(identity.DisplayName, id, steamId, tag, date));
+                var blockLimits = identity.BlockLimits;
+                
+                entries.Add(new PlayerEntry(isReal, isOnline, identity.DisplayName, id, steamId, tag, date, blockLimits.BlocksBuilt, blockLimits.PCUBuilt));
             }
 
-            if(orderby != null) {
-
-                entries.Sort(delegate (PlayerEntry entry1, PlayerEntry entry2) {
-
-                    /* Nullsafety on entry */
-                    if (entry1 == null) {
-
-                        if (entry2 == null)
-                            return 0;
-                        else
-                            return 1;
-
-                    } else if (entry2 == null)
-                        return -1;
-
-                    if (orderby == "date") {
-
-                        if (entry1.date == null) {
-
-                            if (entry2.date == null)
-                                return 0;
-                            else
-                                return 1;
-
-                        } else if (entry2.date == null)
-                            return -1;
-
-                        int result = entry1.date.CompareTo(entry2.date);
-
-                        if (result != 0)
-                            return result;
-                    }
-
-                    if (orderby == "faction") {
-
-                        if (entry1.factionTag == null) {
-
-                            if (entry2.factionTag == null)
-                                return 0;
-                            else
-                                return 1;
-
-                        } else if (entry2.factionTag == null)
-                            return -1;
-
-                        int result = entry1.factionTag.CompareTo(entry2.factionTag);
-
-                        if (result != 0)
-                            return result;
-                    }
-
-                    /* Fallback for name */
-                    if (entry1.name == null) {
-
-                        if (entry2.name == null)
-                            return 0;
-                        else
-                            return 1;
-
-                    } else if (entry2.name == null)
-                        return -1;
-
-                    return entry1.name.CompareTo(entry2.name);
-                });
-            }
+            AttributeFilterer.Filter(entries, filterRules);
+            AttributeSorter.Sort(entries, sortRules);
 
             StringBuilder sb = new StringBuilder();
 
@@ -179,6 +168,7 @@ namespace ALE_PlayerStats {
                     factionName = " [" + entry.factionTag + "]";
 
                 sb.AppendLine((entry.name + factionName).PadRight(20) + " - Date: " + entry.date);
+                sb.AppendLine("    Block: " + entry.blocks + ", PCU: " + entry.pcu);
                 sb.AppendLine("    EntityId: " + entry.id + ", SteamId: " + entry.steamId);
             }
 
@@ -190,23 +180,6 @@ namespace ALE_PlayerStats {
             } else {
 
                 ModCommunication.SendMessageTo(new DialogMessage("Players", "", sb.ToString()), Context.Player.SteamUserId);
-            }
-        }
-
-        private class PlayerEntry {
-
-            public readonly string name;
-            public readonly long id;
-            public readonly ulong steamId;
-            public readonly string factionTag;
-            public readonly DateTime date;
-
-            public PlayerEntry(string name, long id, ulong steamId, string factionTag, DateTime date) {
-                this.name = name;
-                this.id = id;
-                this.steamId = steamId;
-                this.factionTag = factionTag;
-                this.date = date;
             }
         }
     }
