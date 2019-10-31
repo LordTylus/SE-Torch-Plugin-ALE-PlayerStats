@@ -1,6 +1,7 @@
 ﻿using ALE_Core.Attribute;
 using ALE_Core.Attribute.Filter;
 using ALE_Core.Attribute.Sorting;
+using ALE_Core.Utils;
 using NLog;
 using Sandbox.Game.World;
 using System;
@@ -13,6 +14,7 @@ using Torch.Commands.Permissions;
 using Torch.Mod;
 using Torch.Mod.Messages;
 using VRage.Game.ModAPI;
+using static ALE_Core.Utils.OwnershipUtils;
 
 namespace ALE_PlayerStats {
 
@@ -131,6 +133,8 @@ namespace ALE_PlayerStats {
 
             List<PlayerEntry> entries = new List<PlayerEntry>();
 
+            Dictionary<long, BuildStats> buildStats = OwnershipUtils.FindBuildStatsPerPlayer();
+
             foreach (var identity in identities) {
 
                 long id = identity.IdentityId;
@@ -150,9 +154,15 @@ namespace ALE_PlayerStats {
                 if (lastLoginTime > lastLogoutTime)
                     date = lastLoginTime;
 
-                var blockLimits = identity.BlockLimits;
-                
-                entries.Add(new PlayerEntry(isReal, isOnline, identity.DisplayName, id, steamId, tag, date, blockLimits.BlocksBuilt, blockLimits.PCUBuilt));
+                int pcu = 0;
+                int blocks = 0;
+
+                if(buildStats.TryGetValue(id, out BuildStats stats)) {
+                    pcu = stats.PcuCount;
+                    blocks = stats.BlockCount;
+                }
+
+                entries.Add(new PlayerEntry(isReal, isOnline, identity.DisplayName, id, steamId, tag, date, blocks, pcu));
             }
 
             AttributeFilterer.Filter(entries, filterRules);
