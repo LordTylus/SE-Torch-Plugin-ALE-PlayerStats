@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<PluginManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>ALE PlayerStats</Name>
+  <Guid>7ec46062-8625-4012-8392-439f8f7189ec</Guid>
+  <Repository>None</Repository>
+  <Version>v1.0.0.3</Version>
+</PluginManifest>
