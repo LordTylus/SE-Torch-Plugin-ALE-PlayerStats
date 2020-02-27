@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ALE_PlayerStats"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="850" d:DesignWidth="800">
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -30,6 +30,17 @@
                     <RowDefinition Height="Auto"/> <!-- 0 -->
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Column="0" Grid.Row ="0" VerticalAlignment="Center" Text="Commands" FontWeight="Bold" Margin="5" />
@@ -37,6 +48,39 @@
                 <TextBlock Grid.Column="0" Grid.Row ="1" Text="!listplayers [-online] [-players] [-npcs] [-faction=&lt;FactionTag>]&#x0a;[-orderby=&lt;name|date|faction|blocks|pcu>]&#x0a;[-filter=&lt;name|date|faction|blocks|pcu>&lt;&lt;, &lt;=, &gt;, &gt;=, !=, =&gt;&lt;Attribute&gt;]" Margin="5" />
                 <TextBlock Grid.Column="1" Grid.Row ="1" TextWrapping="Wrap" Text="Shows all Players on the server. With their faction, IDs and logout times." Margin="5" />
 
+                <TextBlock Grid.Column="0" Grid.Row ="2" Text="!reputation list player &lt;playername>" Margin="5" />
+                <TextBlock Grid.Column="1" Grid.Row ="2" TextWrapping="Wrap" Text="Lists the Reputation one Player has with every Faction on the server." Margin="5" />
+
+                <TextBlock Grid.Column="0" Grid.Row ="3" Text="!reputation list faction &lt;factionTag>" Margin="5" />
+                <TextBlock Grid.Column="1" Grid.Row ="3" TextWrapping="Wrap" Text="Lists the Reputation one Faction has with every Player on the server." Margin="5" />
+
+                <TextBlock Grid.Column="0" Grid.Row ="4" Text="!reputation list factions &lt;factionTag>" Margin="5" />
+                <TextBlock Grid.Column="1" Grid.Row ="4" TextWrapping="Wrap" Text="Lists the Reputation one Faction has with every Faction on the server." Margin="5" />
+
+                <TextBlock Grid.Column="0" Grid.Row ="5" Text="!reputation change player &lt;playername> &lt;factionTag> &lt;reputationDelta>" Margin="5" />
+                <TextBlock Grid.Column="1" Grid.Row ="5" TextWrapping="Wrap" Text="Adds the given reputation between the given player and faction. It can be negative to remove reputation." Margin="5" />
+
+                <TextBlock Grid.Column="0" Grid.Row ="6" Text="!reputation change faction &lt;factionTag1> &lt;factionTag2> &lt;reputationDelta>" Margin="5" />
+                <TextBlock Grid.Column="1" Grid.Row ="6" TextWrapping="Wrap" Text="Adds the given reputation of all players from faction 1 to faction 2. It can be negative to remove reputation." Margin="5" />
+
+                <TextBlock Grid.Column="0" Grid.Row ="7" Text="!reputation change debugfaction &lt;factionTag1> &lt;factionTag2> &lt;reputationDelta>" Margin="5" />
+                <TextBlock Grid.Column="1" Grid.Row ="7" TextWrapping="Wrap" Text="Adds the given reputation between the given factions. It can be negative to remove reputation. (Use with caution)" Margin="5" />
+
+                <TextBlock Grid.Column="0" Grid.Row ="8" Text="!reputation set player &lt;playername> &lt;factionTag> &lt;reputation> " Margin="5" />
+                <TextBlock Grid.Column="1" Grid.Row ="8" TextWrapping="Wrap" Text="Sets the given reputation between the given player and faction." Margin="5" />
+
+                <TextBlock Grid.Column="0" Grid.Row ="9" Text="!reputation set playerallfactions &lt;playername> &lt;reputation> " Margin="5" />
+                <TextBlock Grid.Column="1" Grid.Row ="9" TextWrapping="Wrap" Text="Sets the given reputation between the given player and all factions." Margin="5" />
+
+                <TextBlock Grid.Column="0" Grid.Row ="10" Text="!reputation set faction &lt;factionTag1> &lt;factionTag2> &lt;reputation>" Margin="5" />
+                <TextBlock Grid.Column="1" Grid.Row ="10" TextWrapping="Wrap" Text="Sets the given reputation of all players from faction 1 to faction 2." Margin="5" />
+
+                <TextBlock Grid.Column="0" Grid.Row ="11" Text="!reputation set factionallplayers &lt;factionTag> &lt;reputation>" Margin="5" />
+                <TextBlock Grid.Column="1" Grid.Row ="11" TextWrapping="Wrap" Text="Sets the given reputation of all players with passed on faction." Margin="5" />
+
+                <TextBlock Grid.Column="0" Grid.Row ="12" Text="!reputation set debugfaction &lt;factionTag1> &lt;factionTag2> &lt;reputation>" Margin="5" />
+                <TextBlock Grid.Column="1" Grid.Row ="12" TextWrapping="Wrap" Text="Sets the given reputation between the given factions. (Use with caution)" Margin="5" />
+                
             </Grid>
 
         </ScrollViewer>
