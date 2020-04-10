@@ -148,38 +148,38 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PlayerEntry.cs" />
-    <Compile Include="PlayerStatsCommands.cs" />
-    <Compile Include="PlayerStatsPlugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs">
+    <Compile Include="ALE-PlayerStats\PlayerEntry.cs" />
+    <Compile Include="ALE-PlayerStats\PlayerStatsCommands.cs" />
+    <Compile Include="ALE-PlayerStats\PlayerStatsPlugin.cs" />
+    <Compile Include="ALE-PlayerStats\Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Include="ALE-PlayerStats\Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
+    <Compile Include="ALE-PlayerStats\Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ReputationCommands.cs" />
-    <Compile Include="ReputationEntry.cs" />
-    <Compile Include="UserControl1.xaml.cs">
+    <Compile Include="ALE-PlayerStats\ReputationCommands.cs" />
+    <Compile Include="ALE-PlayerStats\ReputationEntry.cs" />
+    <Compile Include="ALE-PlayerStats\UserControl1.xaml.cs">
       <DependentUpon>UserControl1.xaml</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Include="ALE-PlayerStats\Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
+    <None Include="ALE-PlayerStats\Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UserControl1.xaml">
+    <Page Include="ALE-PlayerStats\UserControl1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
