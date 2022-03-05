@@ -150,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ALE-PlayerStats\PlayerEntry.cs" />
+    <Compile Include="ALE-PlayerStats\FactionCleanupCommands.cs" />
     <Compile Include="ALE-PlayerStats\PlayerStatsCommands.cs" />
     <Compile Include="ALE-PlayerStats\PlayerStatsPlugin.cs" />
     <Compile Include="ALE-PlayerStats\Properties\AssemblyInfo.cs">
