@@ -149,6 +149,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ALE-PlayerStats\IdentityCleanupCommands.cs" />
     <Compile Include="ALE-PlayerStats\PlayerEntry.cs" />
     <Compile Include="ALE-PlayerStats\FactionCleanupCommands.cs" />
     <Compile Include="ALE-PlayerStats\PlayerStatsCommands.cs" />
