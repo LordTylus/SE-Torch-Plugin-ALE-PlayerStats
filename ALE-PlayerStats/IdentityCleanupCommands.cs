@@ -36,7 +36,7 @@ namespace ALE_PlayerStats {
 
             foreach (var identity in identities) {
 
-                if (!Regex.IsMatch(identity.DisplayName, regex))
+                if (!Regex.IsMatch(PlayerUtils.GetDisplayNameWithoutIcon(identity), regex))
                     continue;
 
                 long IdentityId = identity.IdentityId;
