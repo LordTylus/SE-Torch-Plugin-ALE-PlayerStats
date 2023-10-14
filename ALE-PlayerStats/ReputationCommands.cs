@@ -378,25 +378,52 @@ namespace ALE_PlayerStats {
             enemyFactions.Add("CORRUPT");
             enemyFactions.Add("REAVER");
 
-            HashSet<long> enemyPlayers = new HashSet<long>();
+            HashSet<string> npcFactions = new HashSet<string>();
 
-            foreach (var faction in allFactions)
-                if (enemyFactions.Contains(faction.Tag))
+            HashSet<long> enemyPlayers = new HashSet<long>();
+            HashSet<long> npcPlayers = new HashSet<long>();
+
+            foreach (var faction in allFactions) {
+
+                if (enemyFactions.Contains(faction.Tag)) {
                     enemyPlayers.UnionWith(faction.Members.Keys);
+                    continue;
+                }
+
+                // NPC Factions are > 3 letters in tag. Players can only be 3
+                if (faction.Tag.Length > 3) {
+                    npcFactions.Add(faction.Tag);
+                    npcPlayers.UnionWith(faction.Members.Keys);
+                }
+            }
 
             foreach (var faction in factions.GetAllFactions()) {
 
                 int reputation = -1000;
+                bool isNpcFaction = npcFactions.Contains(faction.Tag);
+                bool isEnemyFaction = enemyFactions.Contains(faction.Tag);
 
-                if (faction.IsEveryoneNpc() && !enemyFactions.Contains(faction.Tag)) 
+                // Everyone is neutral with NPCs except SPRT and stuff
+                if (faction.IsEveryoneNpc() && !isEnemyFaction) 
                     reputation = 0;
 
                 foreach (var player in players.GetAllIdentities()) {
 
                     int playerReputation = reputation;
+                    long identityId = player.IdentityId;
 
-                    if (enemyPlayers.Contains(player.IdentityId) && players.IdentityIsNpc(player.IdentityId))
-                        playerReputation = -1000;
+                    if (players.IdentityIsNpc(identityId)) {
+
+                        bool enemyPlayer = enemyPlayers.Contains(identityId);
+                        bool npcPlayer = npcPlayers.Contains(identityId);
+
+                        // Space Pirates is Enemy with everyone. And CEOs are enemy to each other
+                        if (enemyPlayer || (isNpcFaction && npcPlayer))
+                            playerReputation = -1000;
+                        // CEOs are friendly with all Player Factions
+                        else if (!isEnemyFaction && npcPlayer)
+                            playerReputation = 0;
+                    }
 
                     var currentReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, faction.FactionId);
 
