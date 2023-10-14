@@ -1,11 +1,8 @@
 ﻿using ALE_Core.Attribute.Sorting;
 using ALE_Core.Utils;
 using Sandbox.Game.World;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Torch.Commands;
 using Torch.Commands.Permissions;
 using Torch.Mod;
@@ -347,7 +344,7 @@ namespace ALE_PlayerStats {
         }
 
         [Command("set allreputations", "Sets the given reputation of all players with all factions.")]
-        [Permission(MyPromoteLevel.SpaceMaster)]
+        [Permission(MyPromoteLevel.Admin)]
         public void SetAllReputations(int reputation) {
 
             var players = MySession.Static.Players;
@@ -367,24 +364,43 @@ namespace ALE_PlayerStats {
         }
 
         [Command("reset", "Resets all reputations back to default.")]
-        [Permission(MyPromoteLevel.SpaceMaster)]
+        [Permission(MyPromoteLevel.Admin)]
         public void reset() {
 
             var players = MySession.Static.Players;
             var factions = MySession.Static.Factions;
 
+            var allFactions = factions.GetAllFactions();
+
+            HashSet<string> enemyFactions = new HashSet<string>();
+            enemyFactions.Add("SPRT");
+            enemyFactions.Add("SPID");
+            enemyFactions.Add("CORRUPT");
+            enemyFactions.Add("REAVER");
+
+            HashSet<long> enemyPlayers = new HashSet<long>();
+
+            foreach (var faction in allFactions)
+                if (enemyFactions.Contains(faction.Tag))
+                    enemyPlayers.UnionWith(faction.Members.Keys);
+
             foreach (var faction in factions.GetAllFactions()) {
 
                 int reputation = -1000;
 
-                if (faction.IsEveryoneNpc() && faction.Tag != "SPRT" && faction.Tag != "SPID")
+                if (faction.IsEveryoneNpc() && !enemyFactions.Contains(faction.Tag)) 
                     reputation = 0;
 
                 foreach (var player in players.GetAllIdentities()) {
 
+                    int playerReputation = reputation;
+
+                    if (enemyPlayers.Contains(player.IdentityId))
+                        playerReputation = -1000;
+
                     var currentReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, faction.FactionId);
 
-                    factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, (reputation - currentReputation.Item2), false, true);
+                    factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, (playerReputation - currentReputation.Item2), false, true);
                 }
             }
 
@@ -392,7 +408,7 @@ namespace ALE_PlayerStats {
         }
 
         [Command("set debugfaction", "Sets the given reputation between the given factions.")]
-        [Permission(MyPromoteLevel.SpaceMaster)]
+        [Permission(MyPromoteLevel.Admin)]
         public void SetReputationFaction(string factionTag1, string factionTag2, int reputation) {
 
             var faction1 = FactionUtils.GetIdentityByTag(factionTag1);
