@@ -335,20 +335,61 @@ namespace ALE_PlayerStats {
 
             var players = MySession.Static.Players;
             var factions = MySession.Static.Factions;
-            var newReputation = 0;
-
+            
             foreach (var player in players.GetAllIdentities()) {
 
                 var currentReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, faction.FactionId);
 
                 factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, (reputation - currentReputation.Item2), false, true);
-
-                newReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, faction.FactionId).Item2;
             }
 
             Context.Respond("Set reputation of faction " + faction.Tag + " with all players to "+ reputation.ToString("#,##0"));
         }
 
+        [Command("set allreputations", "Sets the given reputation of all players with all factions.")]
+        [Permission(MyPromoteLevel.SpaceMaster)]
+        public void SetAllReputations(int reputation) {
+
+            var players = MySession.Static.Players;
+            var factions = MySession.Static.Factions;
+
+            foreach (var player in players.GetAllIdentities()) {
+
+                foreach (var faction in factions.GetAllFactions()) {
+
+                    var currentReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, faction.FactionId);
+
+                    factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, (reputation - currentReputation.Item2), false, true);
+                }
+            }
+
+            Context.Respond("Set reputation of all factions with all players to " + reputation.ToString("#,##0"));
+        }
+
+        [Command("reset", "Resets all reputations back to default.")]
+        [Permission(MyPromoteLevel.SpaceMaster)]
+        public void reset() {
+
+            var players = MySession.Static.Players;
+            var factions = MySession.Static.Factions;
+
+            foreach (var faction in factions.GetAllFactions()) {
+
+                int reputation = -1000;
+
+                if (faction.IsEveryoneNpc() && faction.Tag != "SPRT" && faction.Tag != "SPID")
+                    reputation = 0;
+
+                foreach (var player in players.GetAllIdentities()) {
+
+                    var currentReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, faction.FactionId);
+
+                    factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, (reputation - currentReputation.Item2), false, true);
+                }
+            }
+
+            Context.Respond("All Reputations reset!");
+        }
 
         [Command("set debugfaction", "Sets the given reputation between the given factions.")]
         [Permission(MyPromoteLevel.SpaceMaster)]

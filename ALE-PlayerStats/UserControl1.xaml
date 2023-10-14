@@ -41,6 +41,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Column="0" Grid.Row ="0" VerticalAlignment="Center" Text="Commands" FontWeight="Bold" Margin="5" />
@@ -78,8 +80,14 @@
                 <TextBlock Grid.Column="0" Grid.Row ="11" Text="!reputation set factionallplayers &lt;factionTag> &lt;reputation>" Margin="5" />
                 <TextBlock Grid.Column="1" Grid.Row ="11" TextWrapping="Wrap" Text="Sets the given reputation of all players with passed on faction." Margin="5" />
 
-                <TextBlock Grid.Column="0" Grid.Row ="12" Text="!reputation set debugfaction &lt;factionTag1> &lt;factionTag2> &lt;reputation>" Margin="5" />
-                <TextBlock Grid.Column="1" Grid.Row ="12" TextWrapping="Wrap" Text="Sets the given reputation between the given factions. (Use with caution)" Margin="5" />
+                <TextBlock Grid.Column="0" Grid.Row ="12" Text="!reputation set allreputations &lt;reputation>" Margin="5" />
+                <TextBlock Grid.Column="1" Grid.Row ="12" TextWrapping="Wrap" Text="Sets the given reputation of all players with all factions." Margin="5" />
+
+                <TextBlock Grid.Column="0" Grid.Row ="13" Text="!reputation reset" Margin="5" />
+                <TextBlock Grid.Column="1" Grid.Row ="13" TextWrapping="Wrap" Text="Resets reputations to all players and factions back to default." Margin="5" />
+
+                <TextBlock Grid.Column="0" Grid.Row ="14" Text="!reputation set debugfaction &lt;factionTag1> &lt;factionTag2> &lt;reputation>" Margin="5" />
+                <TextBlock Grid.Column="1" Grid.Row ="14" TextWrapping="Wrap" Text="Sets the given reputation between the given factions. (Use with caution)" Margin="5" />
                 
             </Grid>
 
