@@ -395,7 +395,7 @@ namespace ALE_PlayerStats {
 
                     int playerReputation = reputation;
 
-                    if (enemyPlayers.Contains(player.IdentityId))
+                    if (enemyPlayers.Contains(player.IdentityId) && players.IdentityIsNpc(player.IdentityId))
                         playerReputation = -1000;
 
                     var currentReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, faction.FactionId);
