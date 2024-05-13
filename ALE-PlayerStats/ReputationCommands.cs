@@ -169,7 +169,7 @@ namespace ALE_PlayerStats {
 
             var currentReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, faction.FactionId);
 
-            factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, reputationDelta, false, true);
+            factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, reputationDelta, ReputationChangeReason.Admin, false, true);
 
             var newReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, faction.FactionId);
 
@@ -197,7 +197,7 @@ namespace ALE_PlayerStats {
             var factions = MySession.Static.Factions;
 
             foreach (long playerId in faction1.Members.Keys) 
-                factions.AddFactionPlayerReputation(playerId, faction2.FactionId, reputationDelta, false, true);
+                factions.AddFactionPlayerReputation(playerId, faction2.FactionId, reputationDelta, ReputationChangeReason.Admin, false, true);
 
             Context.Respond("Added reputation " + reputationDelta.ToString("#,##0") + " to all Players of Faction " + faction1.Tag + " to " + faction2.Tag);
         }
@@ -253,7 +253,7 @@ namespace ALE_PlayerStats {
 
             var currentReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, faction.FactionId);
 
-            factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, (reputation - currentReputation.Item2), false, true);
+            factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, (reputation - currentReputation.Item2), ReputationChangeReason.Admin, false, true);
 
             var newReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, faction.FactionId);
 
@@ -278,7 +278,7 @@ namespace ALE_PlayerStats {
 
                 var currentReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, localFaction.FactionId);
 
-                factions.AddFactionPlayerReputation(player.IdentityId, localFaction.FactionId, (reputation - currentReputation.Item2), false, true);
+                factions.AddFactionPlayerReputation(player.IdentityId, localFaction.FactionId, (reputation - currentReputation.Item2), ReputationChangeReason.Admin, false, true);
 
                 newReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, localFaction.FactionId).Item2;
             }
@@ -311,7 +311,7 @@ namespace ALE_PlayerStats {
 
                 var currentReputation = factions.GetRelationBetweenPlayerAndFaction(playerId, faction2.FactionId);
 
-                factions.AddFactionPlayerReputation(playerId, faction2.FactionId, (reputation - currentReputation.Item2), false, true);
+                factions.AddFactionPlayerReputation(playerId, faction2.FactionId, (reputation - currentReputation.Item2), ReputationChangeReason.Admin, false, true);
 
                 newReputation = factions.GetRelationBetweenPlayerAndFaction(playerId, faction2.FactionId).Item2;
             }
@@ -337,7 +337,7 @@ namespace ALE_PlayerStats {
 
                 var currentReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, faction.FactionId);
 
-                factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, (reputation - currentReputation.Item2), false, true);
+                factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, (reputation - currentReputation.Item2), ReputationChangeReason.Admin, false, true);
             }
 
             Context.Respond("Set reputation of faction " + faction.Tag + " with all players to "+ reputation.ToString("#,##0"));
@@ -356,7 +356,7 @@ namespace ALE_PlayerStats {
 
                     var currentReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, faction.FactionId);
 
-                    factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, (reputation - currentReputation.Item2), false, true);
+                    factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, (reputation - currentReputation.Item2), ReputationChangeReason.Admin, false, true);
                 }
             }
 
@@ -427,7 +427,7 @@ namespace ALE_PlayerStats {
 
                     var currentReputation = factions.GetRelationBetweenPlayerAndFaction(player.IdentityId, faction.FactionId);
 
-                    factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, (playerReputation - currentReputation.Item2), false, true);
+                    factions.AddFactionPlayerReputation(player.IdentityId, faction.FactionId, (playerReputation - currentReputation.Item2), ReputationChangeReason.Admin, false, true);
                 }
             }
 
